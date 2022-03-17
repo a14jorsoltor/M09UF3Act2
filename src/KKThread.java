@@ -80,7 +80,9 @@ public class KKThread extends Thread implements Runnable {
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
         ) {
-             processInput(in.readLine());
+            String ouputLine = "";
+            ouputLine = processInput(in.readLine());
+            out.println(ouputLine);
 
         } catch (IOException e) {
             e.printStackTrace();
