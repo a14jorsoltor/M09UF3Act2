@@ -1,29 +1,36 @@
-import java.util.concurrent.Callable;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
-public class KKThread extends Thread implements Callable<String> {
+public class KKThread extends Thread implements Runnable {
 
-    private final String theInput;
-
-    public KKThread(String theInput) {
-        this.theInput = theInput;
+    public KKThread(Socket socket) {
+        this.socket = socket;
     }
 
-    private static final int WAITING = 0;
-    private static final int SENTKNOCKKNOCK = 1;
-    private static final int SENTCLUE = 2;
-    private static final int ANOTHER = 3;
-    private static final int NUMJOKES = 5;
-    private int state = WAITING;
-    private int currentJoke = 0;
-    private String[] frase1 = {"Qui és?", "¿Quien es?", "Who is?"};
-    private String[] frase2 = {"Advocat", "Thomas", "Atch"};
-    private String[] frase3 = {"Quin advocat?", "¿Qué Thomas?", "Atch who?"};
-    private String[] frase4 = {"El que tinc aquí penjat!", "Yo un cubata, ¿y tú?", "Bless you!"};
-
-    @Override
-    public String call() throws Exception {
+    private Socket socket;
 
 
+        private static final int WAITING = 0;
+        private static final int SENTKNOCKKNOCK = 1;
+        private static final int SENTCLUE = 2;
+        private static final int ANOTHER = 3;
+
+        private static final int NUMJOKES = 5;
+
+        private int state = WAITING;
+        private int currentJoke = 0;
+
+        private String[] clues = {"Turnip", "Little Old Lady", "Atch", "Who", "Who"};
+        private String[] answers = {"Turnip the heat, it's cold in here!",
+                "I didn't know you could yodel!",
+                "Bless you!",
+                "Is there an owl in here?",
+                "Is there an echo in here?"};
+
+        public String processInput (String theInput){
         String theOutput = null;
 
         if (state == WAITING) {
@@ -37,14 +44,15 @@ public class KKThread extends Thread implements Callable<String> {
                 theOutput = "You're supposed to say \"Who's there?\"! " +
                         "Try again. Knock! Knock!";
             }
-
         } else if (state == SENTCLUE) {
             if (theInput.equalsIgnoreCase(clues[currentJoke] + " who?")) {
                 theOutput = answers[currentJoke] + " Want another? (y/n)";
                 state = ANOTHER;
             } else {
-                theOutput = "You're supposed to say \"" + clues[currentJoke] +
-                        " who?\"" + "! Try again. Knock! Knock!";
+                theOutput = "You're supposed to say \"" +
+                        clues[currentJoke] +
+                        " who?\"" +
+                        "! Try again. Knock! Knock!";
                 state = SENTKNOCKKNOCK;
             }
         } else if (state == ANOTHER) {
@@ -63,9 +71,20 @@ public class KKThread extends Thread implements Callable<String> {
         return theOutput;
     }
 
+
+
+    @Override
+    public void run() {
+        try (
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(socket.getInputStream()));
+        ) {
+             processInput(in.readLine());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
-
-
-
-
-
