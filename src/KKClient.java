@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 
 public class KKClient {
     public static void main(String[] args) throws IOException {
-        String hostName = "192.168.205.115";
+        String hostName = "localhost";
         int portNumber = 40004;
         if (args.length != 2) {
             System.err.println("Usage: java EchoClient " + hostName + " " + portNumber);

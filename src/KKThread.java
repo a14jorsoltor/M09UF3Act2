@@ -13,23 +13,23 @@ public class KKThread extends Thread implements Runnable {
     private Socket socket;
 
 
-        private String idioma;
-        private static final int WAITING = 0;
-        private static final int SENTKNOCKKNOCK = 1;
-        private static final int SENTCLUE = 2;
-        private static final int ANOTHER = 3;
+    private String idioma;
+    private static final int WAITING = 0;
+    private static final int SENTKNOCKKNOCK = 1;
+    private static final int SENTCLUE = 2;
+    private static final int ANOTHER = 3;
 
-        private static final int NUMJOKES = 5;
+    private static final int NUMJOKES = 5;
 
-        private int state = WAITING;
-        private int currentJoke = 0;
+    private int state = WAITING;
+    private int currentJoke = 0;
 
-        private String[] clues = {"Atch", "Thomas", "Advocat"};
-        private String[] answers = {"Bless you!",
-                "Yo un cubata, ¿y tú?",
-                "El que tinc aquí penjat!"};
+    private String[] clues = {"Atch", "Thomas", "Advocat"};
+    private String[] answers = {"Bless you!",
+            "Yo un cubata, ¿y tú?",
+            "El que tinc aquí penjat!"};
 
-        public String processInput (String theInput){
+    public String processInput(String theInput) {
         String theOutput = null;
 
         if (state == WAITING) {
@@ -40,44 +40,65 @@ public class KKThread extends Thread implements Runnable {
                 theOutput = clues[currentJoke];
                 idioma = "ENG";
                 state = SENTCLUE;
-            } else if(theInput.equalsIgnoreCase("Qui es? ")){
+            } else if (theInput.equalsIgnoreCase("Qui es? ")) {
                 theOutput = clues[currentJoke];
                 idioma = "CAT";
                 state = SENTCLUE;
-            }else if (theInput.equalsIgnoreCase("Quien es? ")){
+            } else if (theInput.equalsIgnoreCase("Quien es? ")) {
                 theOutput = clues[currentJoke];
                 idioma = "ESP";
                 state = SENTCLUE;
-            }else {
+            } else {
                 state = SENTKNOCKKNOCK;
-                if(idioma.equals("ENG"))
-                theOutput = "You're supposed to say \"Who's there?\"! " +
-                        "Try again. Knock! Knock!";
-                if(idioma.equals("ESP"))
+                if (idioma.equals("ENG"))
+                    theOutput = "You're supposed to say \"Who's there?\"! " +
+                            "Try again. Knock! Knock!";
+                if (idioma.equals("ESP"))
                     theOutput = "Capullo tienes que decir \"Quien es?\"! " +
                             "Pruebe de nuevo, Knock! Knock!";
-                if(idioma.equals("ENG"))
+                if (idioma.equals("CAT"))
                     theOutput = "Estupid ha de dir \"Qui es? \"! " +
                             "Torni a probar. Knock! Knock!";
             }
+
+
+
         } else if (state == SENTCLUE) {
-            if (theInput.equalsIgnoreCase(clues[1])&& idioma.equals("ENG")) {
+            if (theInput.equalsIgnoreCase(clues[1]) && idioma.equals("ENG")) {
                 theOutput = answers[1] + " Want another? (y/n)";
                 state = ANOTHER;
-            } else if (theInput.equalsIgnoreCase(clues[2])&& idioma.equals("ESP")) {
+            } else if (theInput.equalsIgnoreCase(clues[2]) && idioma.equals("ESP")) {
                 theOutput = answers[2] + " Quiere otro? (y/n)";
                 state = ANOTHER;
 
-
-            }else if (theInput.equalsIgnoreCase(clues[3])&& idioma.equals("CAT")) {
+            } else if (theInput.equalsIgnoreCase(clues[3]) && idioma.equals("CAT")) {
                 theOutput = answers[3] + " Vols un altre? (y/n)";
                 state = ANOTHER;
-            }else {
-                theOutput = "You're supposed to say \"" +
-                        clues[currentJoke] +
-                        " who?\"" +
-                        "! Try again. Knock! Knock!";
-                state = SENTKNOCKKNOCK;
+
+
+
+            } else {
+                if(!theInput.equalsIgnoreCase(clues[1] + " who?")&& idioma.equals("ENG")) {
+                    theOutput = "You're supposed to say \"" +
+                            clues[1] +
+                            " who?\"" +
+                            "! Try again. Knock! Knock!";
+                    state = SENTKNOCKKNOCK;
+                }
+                else if(!theInput.equalsIgnoreCase(clues[2] + " quien?")&& idioma.equals("ESP")) {
+                    theOutput = "Se supone que tienes que decir\"" +
+                            clues[2] +
+                            " who?\"" +
+                            "! Vuelva a probar. Knock! Knock!";
+                    state = SENTKNOCKKNOCK;
+                }
+                else if(!theInput.equalsIgnoreCase(clues[3] +  " qui?")&& idioma.equals("CAT")) {
+                    theOutput = "Se suposa que ha de dir \"" +
+                            clues[3] +
+                            " qui ?\"" +
+                            "! Torni a probar. Knock! Knock!";
+                    state = SENTKNOCKKNOCK;
+                }
             }
         } else if (state == ANOTHER) {
             if (theInput.equalsIgnoreCase("y")) {
@@ -94,7 +115,6 @@ public class KKThread extends Thread implements Runnable {
         }
         return theOutput;
     }
-
 
 
     @Override
