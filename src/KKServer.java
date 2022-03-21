@@ -12,7 +12,6 @@ public class KKServer {
 // TOT EL TRY EN UN FILL, ON LI PASEM EL SERVERSOCKET I UN NOM PE.
 
             try (
-
                     ServerSocket serverSocket = new ServerSocket(portNumber);
             ) {
                 while (true) {
